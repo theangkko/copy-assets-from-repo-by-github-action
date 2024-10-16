@@ -1,0 +1,28 @@
+name: Download Latest Release Assets
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 실행
+
+jobs:
+  download-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v2
+
+      - name: Get latest release info
+        id: get_release
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/coder/code-server/releases/latest)
+          echo "::set-output name=tag::$(echo $latest_release | jq -r .tag_name)"
+          echo "::set-output name=assets::$(echo $latest_release | jq -r '.assets[].browser_download_url')"
+
+      - name: Download assets
+        run: |
+          mkdir -p assets
+          for url in ${{ steps.get_release.outputs.assets }}
+          do
+            curl -L -o assets/$(basename $url) $url
+          done
