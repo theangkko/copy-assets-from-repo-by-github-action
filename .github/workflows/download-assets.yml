@@ -19,22 +19,16 @@ jobs:
         run: |
           latest_release=$(curl -s https://api.github.com/repos/coder/code-server/releases/latest)
           echo "::set-output name=tag::$(echo $latest_release | jq -r .tag_name)"
-          echo "::set-output name=assets::$(echo $latest_release | jq -r '.assets[].browser_download_url')"
+          echo "::set-output name=asset_url::$(echo $latest_release | jq -r '.assets[] | select(.name | contains(\"linux-amd64.tar.gz\")) | .browser_download_url')"
 
-      - name: Download assets
+      - name: Download asset
         run: |
-          mkdir -p temp_download
-          for url in ${{ steps.get_release.outputs.assets }}
-          do
-            curl -L -o temp_download/$(basename $url) $url
-          done
+          curl -L -o code-server-latest-linux-amd64.tar.gz ${{ steps.get_release.outputs.asset_url }}
           
       - name: Move assets to current directory
         run: |
-          mv temp_download/* ./
-          rm -r temp_download
-
-          
+          mv code-server-latest-linux-amd64.tar.gz ./
+      
       - name: Configure Git
         run: |
           git config --global user.email "theangkko@gmail.com"
