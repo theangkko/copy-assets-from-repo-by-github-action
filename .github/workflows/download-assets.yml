@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Check out this repository
-        uses: actions/checkout@v2
+        uses: actions/gh-cli@v1
 
       - name: Get latest release data
         id: get_latest_release
