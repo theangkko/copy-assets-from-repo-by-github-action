@@ -33,6 +33,13 @@ jobs:
         run: |
           mv temp_download/* ./
           rm -r temp_download
+
+          
+      - name: Configure Git
+        run: |
+          git config --global user.email "theangkko@gmail.com"
+          git config --global user.name "theangkko"
+     
           
       - name: Commit and push changes
         run: |
