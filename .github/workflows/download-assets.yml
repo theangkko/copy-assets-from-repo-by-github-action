@@ -28,9 +28,6 @@ jobs:
         run: |
           ls -lh code-server-amd64.tar.gz
           
-      - name: Move assets to current directory
-        run: |
-          mv code-server-amd64.tar.gz ./
       
       - name: Configure Git
         run: |
