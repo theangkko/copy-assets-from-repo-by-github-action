@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out this repository
-        uses: actions/gh-cli@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Get latest release data
+      - name: Get latest release info
         id: get_latest_release
         run: |
-          latest_release=$(gh release view --repo coder/code-server --json assets --jq '.assets[] | select(.name | endswith("amd64.tar.gz")).url')
+          latest_release=$(curl -s https://api.github.com/repos/coder/code-server/releases/latest | jq -r '.assets[] | select(.name | endswith("amd64.tar.gz")).browser_download_url')
           echo "release_url=${latest_release}" >> $GITHUB_ENV
 
       - name: Download amd64.tar.gz
