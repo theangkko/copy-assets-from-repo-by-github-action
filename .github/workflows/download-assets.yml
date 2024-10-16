@@ -14,20 +14,23 @@ jobs:
       - name: Check out this repository
         uses: actions/checkout@v2
 
-      - name: Get latest release info
-        id: get_release
+      - name: Get latest release data
+        id: get_latest_release
         run: |
-          latest_release=$(curl -s https://api.github.com/repos/coder/code-server/releases/latest)
-          echo "::set-output name=tag::$(echo $latest_release | jq -r .tag_name)"
-          echo "::set-output name=asset_url::$(echo $latest_release | jq -r '.assets[] | select(.name | contains(\"linux-amd64.tar.gz\")) | .browser_download_url')"
+          latest_release=$(gh release view --repo coder/code-server --json assets --jq '.assets[] | select(.name | endswith("amd64.tar.gz")).url')
+          echo "release_url=${latest_release}" >> $GITHUB_ENV
 
-      - name: Download asset
+      - name: Download amd64.tar.gz
         run: |
-          curl -L -o code-server-latest-linux-amd64.tar.gz ${{ steps.get_release.outputs.asset_url }}
+          curl -L ${{ env.release_url }} -o code-server-amd64.tar.gz
+
+      - name: Verify file
+        run: |
+          ls -lh code-server-amd64.tar.gz
           
       - name: Move assets to current directory
         run: |
-          mv code-server-latest-linux-amd64.tar.gz ./
+          mv code-server-amd64.tar.gz ./
       
       - name: Configure Git
         run: |
