@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get latest release info
         id: get_latest_release
@@ -28,14 +28,14 @@ jobs:
         run: |
           ls -lh code-server-amd64.tar.gz
           
-      
       - name: Configure Git
         run: |
           git config --global user.email "theangkko@gmail.com"
           git config --global user.name "theangkko"
      
-          
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add .
           git commit -m "Add downloaded assets"
