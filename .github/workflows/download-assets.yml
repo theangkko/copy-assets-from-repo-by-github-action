@@ -23,8 +23,19 @@ jobs:
 
       - name: Download assets
         run: |
-          mkdir -p assets
+          mkdir -p temp_download
           for url in ${{ steps.get_release.outputs.assets }}
           do
-            curl -L -o assets/$(basename $url) $url
+            curl -L -o temp_download/$(basename $url) $url
           done
+          
+      - name: Move assets to current directory
+        run: |
+          mv temp_download/* ./
+          rm -r temp_download
+          
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Add downloaded assets"
+          git push origin main
