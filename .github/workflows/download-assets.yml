@@ -1,8 +1,10 @@
 name: Download Latest Release Assets
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # 매일 실행
+  push:
+    branches:
+      - main
+  
 
 jobs:
   download-assets:
